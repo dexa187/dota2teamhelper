@@ -1,0 +1,49 @@
+{
+  "voicePacks": [
+    {
+      "id": "commander",
+      "label": "Commander (Male Neural)",
+      "edgeVoice": "en-US-AndrewNeural"
+    },
+    {
+      "id": "tactician",
+      "label": "Tactician (Female Neural)",
+      "edgeVoice": "en-US-AvaNeural"
+    }
+  ],
+  "clips": {
+    "pull_small": "Pull small camp soon",
+    "pull_small_now": "Pull small camp now",
+    "pull_large": "Pull large camp soon",
+    "pull_large_now": "Pull large camp now",
+    "stack_camp": "Stack neutral camp soon",
+    "stack_camp_now": "Stack neutral camp now",
+    "water_rune": "Water runes spawning soon",
+    "water_rune_now": "Water runes spawned",
+    "power_rune": "Power rune spawning soon",
+    "power_rune_now": "Power rune spawned",
+    "bounty_rune": "Bounty runes spawning soon",
+    "bounty_rune_now": "Bounty runes spawned",
+    "lotus_pool": "Lotus pool ready soon",
+    "lotus_pool_now": "Lotus pool ready",
+    "wisdom_shrine": "Shrine of Wisdom activating soon",
+    "wisdom_shrine_now": "Shrine of Wisdom active",
+    "catapult_wave": "Catapult wave incoming. Do not pull",
+    "catapult_wave_now": "Catapult wave spawning. Push tower",
+    "day_night_top": "Nighttime soon. Roshan moving to Top Pit",
+    "day_night_bot": "Daytime soon. Roshan moving to Bottom Pit",
+    "aghanims_shard": "Aghanim's Shard unlocking soon",
+    "aghanims_shard_now": "Aghanim's Shard now available in shop",
+    "neutral_tier_1": "Tier 1 neutral items unlocking",
+    "neutral_tier_2": "Tier 2 neutral items unlocking",
+    "neutral_tier_3": "Tier 3 neutral items unlocking",
+    "neutral_tier_4": "Tier 4 neutral items unlocking",
+    "neutral_tier_5": "Tier 5 neutral items unlocking",
+    "tormentor_first": "Tormentor spawning soon",
+    "tormentor_respawn": "Tormentor respawning soon",
+    "roshan_aegis_warn": "Aegis expires in one minute",
+    "roshan_aegis_exp": "Aegis has expired",
+    "roshan_window_open": "Roshan minimum respawn window is open",
+    "roshan_guaranteed": "Roshan is guaranteed alive"
+  }
+}

@@ -1,0 +1,17 @@
+services:
+  dota2-helper:
+    build: .
+    image: dota2-helper:latest
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4141}:4141"
+    environment:
+      NODE_ENV: production
+      PORT: 4141
+      HOST: 0.0.0.0
+      GSI_TOKEN: "${GSI_TOKEN:-}"
+    volumes:
+      - opendota_cache:/app/.cache
+
+volumes:
+  opendota_cache:

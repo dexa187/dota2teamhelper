@@ -1,0 +1,50 @@
+:root {
+  color-scheme: dark;
+
+  --bg-canvas: #0b0e13;
+  --bg-surface: #131822;
+  --bg-elevated: #1a2130;
+  --bg-interactive: #212a3d;
+  --border-subtle: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(148, 163, 184, 0.34);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #a8b5c8;
+  --text-muted: #768499;
+
+  --gold: #d4a84f;
+  --gold-soft: rgba(212, 168, 79, 0.16);
+  --radiant: #4ade80;
+  --radiant-soft: rgba(74, 222, 128, 0.14);
+  --dire: #f87171;
+  --dire-soft: rgba(248, 113, 113, 0.14);
+  --rune-cyan: #38bdf8;
+  --rune-soft: rgba(56, 189, 248, 0.15);
+  --wisdom-violet: #c084fc;
+  --wisdom-soft: rgba(192, 132, 252, 0.16);
+  --turbo-amber: #fb923c;
+  --turbo-soft: rgba(251, 146, 60, 0.16);
+
+  --accent-color: #d4a84f;
+  --focus-ring: #f59e0b;
+
+  --scrollbar-track: #0e131b;
+  --scrollbar-thumb: #3b475c;
+
+  accent-color: var(--accent-color);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+@supports not (scrollbar-color: auto) {
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 999px;
+  }
+}
