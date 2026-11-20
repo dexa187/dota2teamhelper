@@ -1,7 +1,12 @@
+import { execFile } from 'node:child_process';
 import { webcrypto } from 'node:crypto';
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
+
+const execFileAsync = promisify(execFile);
 
 if (!globalThis.crypto) {
   globalThis.crypto = webcrypto;
@@ -23,9 +28,70 @@ function collectStream(stream) {
   });
 }
 
+async function trimSilence(rawBuf, tag) {
+  const workDir = join(tmpdir(), 'dota2-helper-tts');
+  await mkdir(workDir, { recursive: true });
+  const inPath = join(workDir, `${tag}-in.mp3`);
+  const outPath = join(workDir, `${tag}-out.mp3`);
+
+  try {
+    await writeFile(inPath, rawBuf);
+    await execFileAsync('ffmpeg', [
+      '-y',
+      '-i',
+      inPath,
+      '-af',
+      'silenceremove=start_periods=1:start_duration=0:start_threshold=-42dB:detection=peak,areverse,silenceremove=start_periods=1:start_duration=0:start_threshold=-42dB:detection=peak,areverse,atempo=1.12,apad=pad_dur=0.04',
+      '-c:a',
+      'libmp3lame',
+      '-b:a',
+      '48k',
+      '-ar',
+      '24000',
+      '-ac',
+      '1',
+      outPath,
+    ]);
+    const trimmed = await readFile(outPath);
+    if (trimmed && trimmed.length >= 1000) {
+      return trimmed;
+    }
+    return rawBuf;
+  } catch (err) {
+    console.warn(`ffmpeg trim fallback for ${tag}: ${err?.message ?? err}`);
+    return rawBuf;
+  } finally {
+    await Promise.all([
+      rm(inPath, { force: true }).catch(() => {}),
+      rm(outPath, { force: true }).catch(() => {}),
+    ]);
+  }
+}
+
+async function pruneStaleClips(packDir, validClipIds) {
+  const validFilenames = new Set(validClipIds.map((id) => `${id}.mp3`));
+  const files = await readdir(packDir).catch(() => []);
+  let removed = 0;
+  for (const file of files) {
+    if (file.endsWith('.mp3') && !validFilenames.has(file)) {
+      await rm(resolve(packDir, file), { force: true });
+      removed++;
+    }
+  }
+  return removed;
+}
+
 async function synthesizePack(pack, clipEntries, force) {
   const packDir = resolve(OUTPUT_ROOT, pack.id);
   await mkdir(packDir, { recursive: true });
+  const prunedCount = await pruneStaleClips(
+    packDir,
+    clipEntries.map(([id]) => id)
+  );
+  if (prunedCount > 0) {
+    console.log(`Removed ${prunedCount} stale clip(s) from "${pack.id}".`);
+  }
+
   console.log(`\nGenerating ${clipEntries.length} clips for voice pack "${pack.id}" (${pack.edgeVoice})...`);
 
   let generatedCount = 0;
@@ -64,21 +130,21 @@ async function synthesizePack(pack, clipEntries, force) {
         }
       }
 
-      if (sinceConnect >= 8) {
+      if (sinceConnect >= 5) {
         resetClient();
         sinceConnect = 0;
         await new Promise((r) => setTimeout(r, 400));
       }
 
-      let buf = null;
+      let rawBuf = null;
       let lastErr = null;
       for (let attempt = 1; attempt <= 5; attempt++) {
         try {
           const client = await ensureClient();
           const { audioStream } = client.toStream(phrase);
-          buf = await collectStream(audioStream);
-          if (!buf || buf.length < 1000) {
-            throw new Error(`Synthesized buffer too small (${buf?.length ?? 0} bytes)`);
+          rawBuf = await collectStream(audioStream);
+          if (!rawBuf || rawBuf.length < 1000) {
+            throw new Error(`Synthesized buffer too small (${rawBuf?.length ?? 0} bytes)`);
           }
           sinceConnect++;
           break;
@@ -92,13 +158,14 @@ async function synthesizePack(pack, clipEntries, force) {
         }
       }
 
-      if (!buf) {
+      if (!rawBuf) {
         throw new Error(`Failed clip ${pack.id}/${clipId}: ${lastErr?.message ?? lastErr}`);
       }
 
-      await writeFile(outPath, buf);
+      const finalBuf = await trimSilence(rawBuf, `${pack.id}-${clipId}`);
+      await writeFile(outPath, finalBuf);
       generatedCount++;
-      totalBytes += buf.length;
+      totalBytes += finalBuf.length;
       await new Promise((r) => setTimeout(r, 200));
     }
   } finally {

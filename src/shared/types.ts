@@ -204,6 +204,82 @@ export interface TeamAuraDuty {
   reason: string;
 }
 
+export type NeutralTier = 1 | 2 | 3 | 4;
+export type NeutralPoolIndex = 1 | 2 | 3 | 4;
+
+export interface NeutralCounterRule {
+  tag: ThreatTag;
+  score: number;
+  reason: string;
+}
+
+export interface NeutralArtifactCatalogEntry {
+  key: string;
+  name: string;
+  img: string;
+  tier: NeutralTier;
+  pool: NeutralPoolIndex;
+  summary: string;
+  validPositions: Position[];
+  preferredArchetypes: HeroArchetype[];
+  attackTypeFilter?: AttackType;
+  counters?: NeutralCounterRule[];
+  turboBonus?: number;
+  turboPenalty?: number;
+  baseScore: number;
+  defaultReason: string;
+}
+
+export interface NeutralEnchantmentCatalogEntry {
+  key: string;
+  name: string;
+  img: string;
+  tiers: NeutralTier[];
+  allowedPrimaryAttrs: PrimaryAttr[];
+  statsByTier: Partial<Record<NeutralTier, string>>;
+  tradeoff?: string;
+  validPositions: Position[];
+  preferredArchetypes: HeroArchetype[];
+  counters?: NeutralCounterRule[];
+  turboBonus?: number;
+  turboPenalty?: number;
+  baseScore: number;
+  defaultReason: string;
+}
+
+export interface RecommendedNeutralArtifact {
+  key: string;
+  name: string;
+  img: string;
+  tier: NeutralTier;
+  pool: NeutralPoolIndex;
+  summary: string;
+  score: number;
+  reason: string;
+  countersHeroes: Array<{ heroId: number; heroName: string; img: string; note: string }>;
+}
+
+export interface RecommendedNeutralEnchantment {
+  key: string;
+  name: string;
+  img: string;
+  tier: NeutralTier;
+  stats: string;
+  tradeoff?: string;
+  score: number;
+  reason: string;
+  isAttrExclusive: boolean;
+  countersHeroes: Array<{ heroId: number; heroName: string; img: string; note: string }>;
+}
+
+export interface TierNeutralRecommendation {
+  tier: NeutralTier;
+  unlockSeconds: number;
+  unlockLabel: string;
+  artifacts: RecommendedNeutralArtifact[];
+  enchantments: RecommendedNeutralEnchantment[];
+}
+
 export interface HeroItemBuildRecommendation {
   hero: HeroRecord;
   position: Position;
@@ -215,6 +291,7 @@ export interface HeroItemBuildRecommendation {
   core: RecommendedItem[];
   counters: RecommendedItem[];
   late: RecommendedItem[];
+  neutrals: TierNeutralRecommendation[];
   turboNotes: string[];
 }
 

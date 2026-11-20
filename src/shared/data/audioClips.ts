@@ -14,7 +14,7 @@ export const VOICE_PACKS = clipsData.voicePacks as VoicePackInfo[];
 export const AUDIO_CLIPS = clipsData.clips as Record<AudioClipId, string>;
 
 export function getClipUrl(voicePack: VoicePackId, clipId: AudioClipId): string {
-  return `/audio/cues/${voicePack}/${clipId}.mp3`;
+  return `/audio/cues/${voicePack}/${clipId}.mp3?v=2`;
 }
 
 export function getDefaultClipIdForCue(cueId: CueId, leadSeconds: number): AudioClipId {

@@ -103,7 +103,7 @@ export function useMatchClock(options: UseMatchClockOptions) {
     if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
     toastTimerRef.current = window.setTimeout(() => {
       setActiveToast(null);
-    }, 6500);
+    }, 5000);
   }, []);
 
   const advanceAndEvaluate = useCallback(

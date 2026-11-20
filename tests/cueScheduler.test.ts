@@ -1,4 +1,4 @@
-import { statSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { AUDIO_CLIPS, VOICE_PACKS } from '../src/shared/data/audioClips';
@@ -24,8 +24,8 @@ describe('cueScheduler', () => {
 
     const regNeutrals = regUpcoming.filter((c) => c.cueId === 'neutral_tiers').map((c) => c.eventTime);
     const turboNeutrals = turboUpcoming.filter((c) => c.cueId === 'neutral_tiers').map((c) => c.eventTime);
-    expect(regNeutrals.slice(0, 2)).toEqual([300, 900]);
-    expect(turboNeutrals.slice(0, 3)).toEqual([150, 450, 750]);
+    expect(regNeutrals.slice(0, 2)).toEqual([0, 900]);
+    expect(turboNeutrals.slice(0, 3)).toEqual([0, 450, 900]);
 
     // Roshan killed at 600s -> Regular Aegis 900s, Min 1080s, Max 1260s; Turbo Aegis 840s, Min 840s, Max 930s
     const killedBoss: BossTrackerState = { roshanKilledAt: 600, tormentorKilledAt: 1200 };
@@ -119,13 +119,17 @@ describe('cueScheduler', () => {
     }
 
     const clipIds = Object.keys(AUDIO_CLIPS);
+    expect(clipIds).not.toContain('neutral_tier_5');
     for (const pack of VOICE_PACKS) {
       for (const clipId of clipIds) {
         const filePath = resolve(process.cwd(), 'public/audio/cues', pack.id, `${clipId}.mp3`);
         const info = statSync(filePath);
         expect(info.isFile()).toBe(true);
         expect(info.size).toBeGreaterThan(1000);
+        expect(info.size).toBeLessThan(12000);
       }
+      const staleTier5 = resolve(process.cwd(), 'public/audio/cues', pack.id, 'neutral_tier_5.mp3');
+      expect(existsSync(staleTier5)).toBe(false);
     }
   });
 });

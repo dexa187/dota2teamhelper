@@ -195,8 +195,8 @@ export class DotaAudioEngine {
     freqs.forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      const start = now + idx * 0.11;
-      const duration = category === 'boss' ? 0.26 : 0.18;
+      const start = now + idx * 0.08;
+      const duration = category === 'boss' ? 0.19 : 0.13;
 
       osc.type = category === 'boss' ? 'triangle' : 'sine';
       osc.frequency.setValueAtTime(freq, start);
@@ -265,7 +265,7 @@ export class DotaAudioEngine {
         this.activeSources.delete(source);
       };
       source.start(cursor);
-      cursor += buffer.duration / rate + 0.14;
+      cursor += buffer.duration / rate + 0.07;
     }
   }
 
@@ -276,7 +276,7 @@ export class DotaAudioEngine {
     }
     if (this.settings.mode === 'both' || this.settings.mode === 'voice') {
       const clipIds = batch.cues.map((c) => c.clipId as AudioClipId);
-      const delaySec = this.settings.mode === 'both' ? 0.16 : 0;
+      const delaySec = this.settings.mode === 'both' ? 0.10 : 0;
       void this.playClipSequence(clipIds, delaySec, batch.category === 'boss');
     }
   }
@@ -288,7 +288,7 @@ export class DotaAudioEngine {
       this.playChime(category, true);
     }
     if (mode !== 'chime') {
-      const delaySec = mode === 'voice' ? 0 : 0.16;
+      const delaySec = mode === 'voice' ? 0 : 0.10;
       await this.playClipSequence([clipId], delaySec, true);
     }
   }

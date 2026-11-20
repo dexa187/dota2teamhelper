@@ -48,30 +48,28 @@ function formatCueAnnouncement(
 ): string {
   const label = customLabel ?? def.label;
   if (def.id === 'pull_small') {
-    return leadSeconds > 0 ? `Pull small camp in ${leadSeconds} seconds` : 'Pull small camp now';
+    return leadSeconds > 0 ? `Pull small in ${leadSeconds}s` : 'Pull small now';
   }
   if (def.id === 'pull_large') {
-    return leadSeconds > 0 ? `Pull large camp in ${leadSeconds} seconds` : 'Pull large camp now';
+    return leadSeconds > 0 ? `Pull large in ${leadSeconds}s` : 'Pull large now';
   }
   if (def.id === 'stack_camp') {
-    return leadSeconds > 0 ? `Stack camp in ${leadSeconds} seconds` : 'Stack neutral camp now';
+    return leadSeconds > 0 ? `Stack camp in ${leadSeconds}s` : 'Stack now';
   }
   if (def.id === 'day_night_pit') {
     const nextState = getMapCycleState(eventTime);
-    const pitWord = nextState.isNight ? 'Nighttime, Roshan moving Top Pit' : 'Daytime, Roshan moving Bottom Pit';
-    return leadSeconds > 0 ? `${pitWord} in ${leadSeconds} seconds` : pitWord;
+    const pitWord = nextState.isNight ? 'Night, Rosh top' : 'Day, Rosh bot';
+    return leadSeconds > 0 ? `${pitWord} in ${leadSeconds}s` : pitWord;
   }
   if (def.id === 'catapult_wave') {
     return leadSeconds > 0
-      ? `Catapult wave in ${leadSeconds} seconds, do not pull`
-      : 'Catapult wave spawning, push tower';
+      ? `Catapult in ${leadSeconds}s — don't pull`
+      : 'Catapult — push';
   }
   if (def.id === 'aghanims_shard') {
-    return leadSeconds > 0
-      ? `Aghanim's Shard unlocks in ${leadSeconds} seconds`
-      : "Aghanim's Shard now available in shop";
+    return leadSeconds > 0 ? `Shard in ${leadSeconds}s` : 'Shard ready';
   }
-  return leadSeconds > 0 ? `${label} in ${leadSeconds} seconds` : `${label} now`;
+  return leadSeconds > 0 ? `${label} in ${leadSeconds}s` : `${label} now`;
 }
 
 function resolveClipId(
@@ -105,7 +103,7 @@ function resolveClipId(
     case 'aghanims_shard':
       return soon ? 'aghanims_shard' : 'aghanims_shard_now';
     case 'neutral_tiers': {
-      const m = customLabel?.match(/Tier\s+([1-5])/);
+      const m = customLabel?.match(/Tier\s+([1-4])/);
       const tier = m ? m[1] : '1';
       return `neutral_tier_${tier}` as AudioClipId;
     }
@@ -166,28 +164,28 @@ function generateOccurrencesForCue(
         {
           time: aegisWarn,
           label: 'Aegis 1m Warning',
-          announcement: 'Aegis expires in 1 minute',
+          announcement: 'Aegis 1m left',
           suffix: ':aegis_warn',
           clipId: 'roshan_aegis_warn',
         },
         {
           time: aegisExpire,
           label: 'Aegis Expired',
-          announcement: 'Aegis has expired',
+          announcement: 'Aegis expired',
           suffix: ':aegis_exp',
           clipId: 'roshan_aegis_exp',
         },
         {
           time: roshMin,
           label: 'Roshan Window Opens',
-          announcement: 'Roshan minimum respawn window is open',
+          announcement: 'Rosh window open',
           suffix: ':rosh_min',
           clipId: 'roshan_window_open',
         },
         {
           time: roshMax,
           label: 'Roshan Guaranteed Alive',
-          announcement: 'Roshan is guaranteed alive',
+          announcement: 'Rosh guaranteed up',
           suffix: ':rosh_max',
           clipId: 'roshan_guaranteed',
         },
@@ -300,10 +298,10 @@ function combineSpokenPhrases(cues: UpcomingCue[]): string {
   const sorted = [...cues].sort((a, b) => b.priority - a.priority);
   const allSameLead = sorted.every((c) => c.leadSeconds === sorted[0].leadSeconds && c.leadSeconds > 0);
   if (allSameLead && sorted.every((c) => c.cueId !== 'roshan')) {
-    const names = sorted.map((c) => c.label).join(' and ');
-    return `${names} in ${sorted[0].leadSeconds} seconds`;
+    const names = sorted.map((c) => c.label).join(' & ');
+    return `${names} in ${sorted[0].leadSeconds}s`;
   }
-  return sorted.map((c) => c.announcement).join('. ');
+  return sorted.map((c) => c.announcement).join(' · ');
 }
 
 export function evaluateDueCues(

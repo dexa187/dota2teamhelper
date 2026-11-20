@@ -1,4 +1,5 @@
 import { ITEMS_CATALOG, THREAT_LABELS, getItemEntry } from '../data/itemsCatalog';
+import { recommendHeroNeutrals } from './neutralRecommender';
 import type {
   GameMode,
   HeroItemBuildRecommendation,
@@ -439,6 +440,7 @@ export function recommendTeamItems(params: {
       core,
       counters: counterItems,
       late,
+      neutrals: recommendHeroNeutrals(hero, position, threatMap, mode),
       turboNotes: [...new Set(turboNotes)],
     });
   }

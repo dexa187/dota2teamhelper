@@ -481,7 +481,7 @@ export function App() {
           className="nav-tab"
           onClick={() => setActiveTab('items')}
         >
-          Counter Items
+          Items &amp; Neutrals
           {itemRecommendations.teamDuties.length > 0 && (
             <span className="badge-count">{itemRecommendations.teamDuties.length} duties</span>
           )}
@@ -531,6 +531,7 @@ export function App() {
         {activeTab === 'items' && (
           <ItemBuildsView
             mode={effectiveDraft.mode}
+            clockSeconds={clock.clockSeconds}
             threats={itemRecommendations.threats}
             teamDuties={itemRecommendations.teamDuties}
             builds={itemRecommendations.builds}

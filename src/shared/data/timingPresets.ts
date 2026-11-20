@@ -127,18 +127,18 @@ export const TIMING_CUES: TimingCueDefinition[] = [
   {
     id: 'neutral_tiers',
     label: 'Neutral Item Tiers (Madstone)',
-    description: 'Madstone neutral crafting tier unlocks (halved in Turbo).',
+    description: 'Madstone neutral crafting tier unlocks (0:00 / 15:00 / 30:00 / 50:00 Regular, halved in Turbo).',
     category: 'tier',
     priority: 40,
     defaultEnabled: true,
     defaultLeadSeconds: 10,
     regular: {
-      oneShotTimes: [300, 900, 1500, 2100, 3600],
-      labels: ['Tier 1 Neutral', 'Tier 2 Neutral', 'Tier 3 Neutral', 'Tier 4 Neutral', 'Tier 5 Neutral'],
+      oneShotTimes: [0, 900, 1800, 3000],
+      labels: ['Tier 1 Neutral', 'Tier 2 Neutral', 'Tier 3 Neutral', 'Tier 4 Neutral'],
     },
     turbo: {
-      oneShotTimes: [150, 450, 750, 1050, 1800],
-      labels: ['Tier 1 Neutral', 'Tier 2 Neutral', 'Tier 3 Neutral', 'Tier 4 Neutral', 'Tier 5 Neutral'],
+      oneShotTimes: [0, 450, 900, 1500],
+      labels: ['Tier 1 Neutral', 'Tier 2 Neutral', 'Tier 3 Neutral', 'Tier 4 Neutral'],
     },
   },
   {
